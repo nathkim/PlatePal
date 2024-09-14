@@ -4,70 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlatePal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-        input[type="number"], input[type="text"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        input[type="checkbox"] {
-            margin-right: 10px;
-        }
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .checkbox-group {
-            margin: 10px 0;
-        }
-    </style>
-    <script>
-        function toggleOtherInput() {
-            var otherCheckbox = document.getElementById('other');
-            var otherInput = document.getElementById('other-restriction');
-            otherInput.style.display = otherCheckbox.checked ? 'block' : 'none';
-        }
-    </script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div>
+    <div class="navbar">
+        <a href="/index.html">Home</a>
+        <a href="/schedule.html">Schedule</a>
+        <a href="/liked.html">Liked Recipes</a>
+    </div>
+    <div class="container">
         <h1>PlatePal - Recipe Finder</h1>
         <form action="/recommend" method="POST">
             <label for="calories">Daily Calorie Intake:</label>
@@ -122,4 +67,3 @@
     </div>
 </body>
 </html>
-

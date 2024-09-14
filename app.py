@@ -36,9 +36,18 @@ def recommend():
 # Route to handle saving liked recipes
 @app.route('/save-likes', methods=['POST'])
 def save_likes():
-    liked_recipe_ids = request.form.getlist('liked_recipes')  # Get all selected recipe IDs
-    if liked_recipe_ids:
-        session['liked_recipes'] = liked_recipe_ids
+    liked_recipe_ids = request.form.getlist('liked_recipes')
+    
+    if 'liked_recipes' not in session:
+        session['liked_recipes'] = []
+
+    # Update session liked recipes list based on the checkboxes
+    current_likes = set(session['liked_recipes'])
+    new_likes = set(liked_recipe_ids)
+    
+    # Add new likes and remove unliked recipes
+    session['liked_recipes'] = list(current_likes.union(new_likes))
+    
     return redirect(url_for('home'))
 
 # Route to display detailed recipe information
@@ -46,6 +55,13 @@ def save_likes():
 def recipe_info(recipe_id):
     recipe_details = get_recipe_information(recipe_id)
     return render_template('recipe_info.html', recipe=recipe_details)
+
+# Route to display liked recipes
+@app.route('/liked')
+def liked_recipes():
+    liked_ids = session.get('liked_recipes', [])
+    recipes = [get_recipe_information(recipe_id) for recipe_id in liked_ids]
+    return render_template('liked.html', recipes=recipes)
 
 # Route to test if the Spoonacular API works
 @app.route('/test-api')
