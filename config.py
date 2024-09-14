@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
 import os
 
-SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY', 'your5e36e09c14df64cebb6d5da2d5248e0916e477ed')
+load_dotenv() 
+
+SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
+
+if not SPOONACULAR_API_KEY:
+    raise ValueError("No SPOONACULAR_API_KEY set for Flask application.")
