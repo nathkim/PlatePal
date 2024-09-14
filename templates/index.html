@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlatePal</title>
+    <script>
+        function toggleOtherInput() {
+            var otherCheckbox = document.getElementById('other');
+            var otherInput = document.getElementById('other-restriction');
+            otherInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+        }
+    </script>
 </head>
 <body>
     <h1>PlatePal - Recipe Finder</h1>
@@ -11,11 +18,31 @@
         <label for="calories">Daily Calorie Intake:</label>
         <input type="number" id="calories" name="calories" required><br><br>
 
-        <label for="restrictions">Dietary Restrictions (comma-separated):</label>
-        <input type="text" id="restrictions" name="restrictions"><br><br>
+        <!-- Dietary Restrictions Checkbox List -->
+        <label for="restrictions">Dietary Restrictions/Allergies:</label><br>
+        <input type="checkbox" id="gluten-free" name="restrictions" value="Gluten-Free">
+        <label for="gluten-free">Gluten-Free</label><br>
 
-        <label for="preferences">Dietary Preferences (e.g., vegan, Italian):</label>
-        <input type="text" id="preferences" name="preferences"><br><br>
+        <input type="checkbox" id="vegan" name="restrictions" value="Vegan">
+        <label for="vegan">Vegan</label><br>
+
+        <input type="checkbox" id="vegetarian" name="restrictions" value="Vegetarian">
+        <label for="vegetarian">Vegetarian</label><br>
+
+        <input type="checkbox" id="nut-allergy" name="restrictions" value="Nut-Free">
+        <label for="nut-allergy">Nut-Free</label><br>
+
+        <input type="checkbox" id="dairy-free" name="restrictions" value="Dairy-Free">
+        <label for="dairy-free">Dairy-Free</label><br>
+
+        <!-- "Other" checkbox with text input -->
+        <input type="checkbox" id="other" name="restrictions" value="Other" onclick="toggleOtherInput()">
+        <label for="other">Other</label><br>
+
+        <input type="text" id="other-restriction" name="other-restriction" style="display:none;" placeholder="Please specify"><br><br>
+
+        <label for="preferences">Dietary Preferences:</label>
+        <input type="text" id="preferences" name="preferences" placeholder="e.g., vegan, Italian"><br><br>
 
         <label for="meals">Number of Meals Per Day:</label>
         <input type="number" id="meals" name="meals" required><br><br>
