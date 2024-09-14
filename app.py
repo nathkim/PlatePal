@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, url_for
 import requests
 from config import SPOONACULAR_API_KEY
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'  # Required for session management
 
 # Home route to display input form
 @app.route('/')
@@ -12,18 +13,33 @@ def home():
 # Route to process user input and return recipe search results
 @app.route('/recommend', methods=['POST'])
 def recommend():
-    calorie_intake = int(request.form['calories'])
-    dietary_restrictions = request.form.getlist('restrictions')
-    dietary_preferences = request.form['preferences']
-    meals_per_day = int(request.form['meals'])
+    try:
+        calorie_intake = int(request.form.get('calories', 0))
+        dietary_restrictions = request.form.getlist('allergies')  # Updated from 'restrictions'
+        dietary_preferences = request.form.getlist('preferences')  # Updated to use getlist for multiple values
+        meals_per_day = int(request.form.get('meals', 1))  # Default to 1 if not provided
 
-    # Calculate calories per meal
-    calories_per_meal = calorie_intake // meals_per_day
+        if meals_per_day <= 0:
+            meals_per_day = 1  # Prevent division by zero
 
-    # Fetch recipe recommendations
-    recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
+        # Calculate calories per meal
+        calories_per_meal = calorie_intake // meals_per_day
 
-    return render_template('results.html', recipes=recipes)
+        # Fetch recipe recommendations
+        recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
+
+        return render_template('results.html', recipes=recipes)
+    except ValueError:
+        # Handle value errors in case of invalid integer conversions
+        return "Invalid input. Please check your values and try again."
+
+# Route to handle saving liked recipes
+@app.route('/save-likes', methods=['POST'])
+def save_likes():
+    liked_recipe_ids = request.form.getlist('liked_recipes')  # Get all selected recipe IDs
+    if liked_recipe_ids:
+        session['liked_recipes'] = liked_recipe_ids
+    return redirect(url_for('home'))
 
 # Route to display detailed recipe information
 @app.route('/recipe/<int:recipe_id>')
@@ -48,7 +64,7 @@ def get_recipe_recommendations(calories_per_meal, restrictions, preferences, num
     params = {
         'apiKey': SPOONACULAR_API_KEY,
         'maxCalories': calories_per_meal,
-        'diet': preferences,
+        'diet': ','.join(preferences),  # Join preferences into a comma-separated string
         'intolerances': ','.join(restrictions),
         'number': number_of_recipes
     }
