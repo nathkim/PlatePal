@@ -1,18 +1,15 @@
 from flask import Flask, render_template, request
 import requests
+from config import SPOONACULAR_API_KEY
 
 app = Flask(__name__)
-
-# API keys for Spoonacular (Recipes) and Yelp (Restaurants)
-SPOONACULAR_API_KEY = 'your_spoonacular_api_key'
-YELP_API_KEY = 'your_yelp_api_key'
 
 # Home route to display input form
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Route to process user input and return recommendations
+# Route to process user input and return recipe search results
 @app.route('/recommend', methods=['POST'])
 def recommend():
     calorie_intake = int(request.form['calories'])
@@ -24,36 +21,60 @@ def recommend():
     calories_per_meal = calorie_intake // meals_per_day
 
     # Fetch recipe recommendations
-    recipe_results = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
+    recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
 
-    # Fetch restaurant recommendations
-    location = 'your_location'  # Can be dynamic, based on user input
-    restaurant_results = get_restaurant_recommendations(dietary_preferences, dietary_restrictions, location)
+    return render_template('results.html', recipes=recipes)
 
-    return render_template('results.html', recipes=recipe_results, restaurants=restaurant_results)
+# Route to display detailed recipe information
+@app.route('/recipe/<int:recipe_id>')
+def recipe_info(recipe_id):
+    recipe_details = get_recipe_information(recipe_id)
+    return render_template('recipe_info.html', recipe=recipe_details)
 
-def get_recipe_recommendations(calories_per_meal, restrictions, preferences):
-    url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={SPOONACULAR_API_KEY}"
+# Route to test if the Spoonacular API works
+@app.route('/test-api')
+def test_api():
+    test_url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={SPOONACULAR_API_KEY}&query=salad&number=1"
+    response = requests.get(test_url)
+    
+    if response.status_code == 200:
+        return f"API Test Successful: {response.json()}"
+    else:
+        return f"API Test Failed: {response.status_code}"
+
+# Function to search for recipes
+def get_recipe_recommendations(calories_per_meal, restrictions, preferences, number_of_recipes=5):
+    url = f"https://api.spoonacular.com/recipes/complexSearch"
     params = {
+        'apiKey': SPOONACULAR_API_KEY,
         'maxCalories': calories_per_meal,
-        'diet': preferences,  # E.g., 'vegetarian'
-        'intolerances': ','.join(restrictions),  # E.g., 'gluten, dairy'
-        'number': 5
+        'diet': preferences,
+        'intolerances': ','.join(restrictions),
+        'number': number_of_recipes
     }
+    
     response = requests.get(url, params=params)
-    return response.json().get('results', [])
+    
+    if response.status_code == 200:
+        return response.json().get('results', [])
+    else:
+        print(f"Error: {response.status_code}")
+        return []
 
-def get_restaurant_recommendations(preferences, restrictions, location):
-    url = "https://api.yelp.com/v3/businesses/search"
-    headers = {"Authorization": f"Bearer {YELP_API_KEY}"}
+# Function to get detailed recipe information
+def get_recipe_information(recipe_id):
+    url = f"https://api.spoonacular.com/recipes/{recipe_id}/information"
     params = {
-        'term': preferences,  # E.g., 'vegan', 'Japanese'
-        'location': location,
-        'categories': ','.join(restrictions),  # E.g., 'gluten-free'
-        'limit': 5
+        'apiKey': SPOONACULAR_API_KEY
     }
-    response = requests.get(url, headers=headers, params=params)
-    return response.json().get('businesses', [])
+    
+    response = requests.get(url, params=params)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Error: {response.status_code}")
+        return {}
 
 if __name__ == '__main__':
     app.run(debug=True)
