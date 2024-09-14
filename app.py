@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
-import requests
-from config import SPOONACULAR_API_KEY
+import requests, os, openai
+from config import SPOONACULAR_API_KEY, OPENAI_API_KEY
 
 app = Flask(__name__)
 
