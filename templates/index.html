@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlatePal</title>
+</head>
+<body>
+    <h1>PlatePal - Your Meal Planner</h1>
+    <form action="/recommend" method="POST">
+        <label for="calories">Daily Calorie Intake:</label>
+        <input type="number" id="calories" name="calories" required><br><br>
+
+        <label for="restrictions">Dietary Restrictions (comma-separated):</label>
+        <input type="text" id="restrictions" name="restrictions"><br><br>
+
+        <label for="preferences">Dietary Preferences:</label>
+        <input type="text" id="preferences" name="preferences" placeholder="e.g., vegan, Italian"><br><br>
+
+        <label for="meals">Number of Meals Per Day:</label>
+        <input type="number" id="meals" name="meals" required><br><br>
+
+        <button type="submit">Get Recommendations</button>
+    </form>
+</body>
+</html>

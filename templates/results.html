@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlatePal - Recommendations</title>
+</head>
+<body>
+    <h1>Here are your meal recommendations:</h1>
+
+    <h2>Recipes:</h2>
+    <ul>
+        {% for recipe in recipes %}
+        <li><a href="https://spoonacular.com/recipes/{{ recipe.title|replace(' ', '-') }}-{{ recipe.id }}" target="_blank">{{ recipe.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h2>Restaurants:</h2>
+    <ul>
+        {% for restaurant in restaurants %}
+        <li><a href="{{ restaurant.url }}" target="_blank">{{ restaurant.name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
