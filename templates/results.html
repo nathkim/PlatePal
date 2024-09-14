@@ -8,14 +8,42 @@
 <body>
     <h1>Your Recipe Recommendations</h1>
 
-    <h2>Recipes:</h2>
+    <h2>Breakfast Recipes:</h2>
     <ul>
-        {% for recipe in recipes %}
+        {% for recipe in breakfast_list %}
         <li>
             <a href="/recipe/{{ recipe.id }}">
                 {{ recipe.title }}
             </a>
         </li>
+        {% else %}
+        <li>No breakfast recipes found.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Lunch Recipes:</h2>
+    <ul>
+        {% for recipe in lunch_list %}
+        <li>
+            <a href="/recipe/{{ recipe.id }}">
+                {{ recipe.title }}
+            </a>
+        </li>
+        {% else %}
+        <li>No lunch recipes found.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Dinner Recipes:</h2>
+    <ul>
+        {% for recipe in dinner_list %}
+        <li>
+            <a href="/recipe/{{ recipe.id }}">
+                {{ recipe.title }}
+            </a>
+        </li>
+        {% else %}
+        <li>No dinner recipes found.</li>
         {% endfor %}
     </ul>
 

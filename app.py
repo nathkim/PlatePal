@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 import requests, os, openai
-from config import SPOONACULAR_API_KEY, OPENAI_API_KEY
+from config import SPOONACULAR_API_KEY
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 app = Flask(__name__)
 
@@ -8,6 +10,25 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template('index.html')
+
+# Function to ask ChatGPT to categorize each recipe
+def categorize_recipe(recipe):
+    prompt = f"Is '{recipe}' considered breakfast, lunch, or dinner one word answer"
+    
+    # Send the prompt to OpenAI GPT-3.5
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a culinary expert."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=10
+    )
+    
+    # Extract the response content (e.g., "breakfast", "lunch", or "dinner")
+    answer = response.choices[0].message.content
+    
+    return answer
 
 # Route to process user input and return recipe search results
 @app.route('/recommend', methods=['POST'])
@@ -23,7 +44,27 @@ def recommend():
     # Fetch recipe recommendations
     recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
 
-    return render_template('results.html', recipes=recipes)
+    breakfast_list = []
+    lunch_list = []
+    dinner_list = []
+
+    # Loop through each recipe and categorize it
+    for r in recipes:
+        category = categorize_recipe(r)
+    
+        # Sort the recipe into the appropriate list based on the OpenAI response
+        if "breakfast" in category.lower():
+            breakfast_list.append(r)
+        elif "lunch" in category.lower():
+            lunch_list.append(r)
+        elif "dinner" in category.lower():
+            dinner_list.append(r)
+
+    # Pass the categorized lists to the HTML template
+    return render_template('results.html', 
+                           breakfast_list=breakfast_list, 
+                           lunch_list=lunch_list, 
+                           dinner_list=dinner_list)
 
 # Route to display detailed recipe information
 @app.route('/recipe/<int:recipe_id>')
@@ -43,7 +84,7 @@ def test_api():
         return f"API Test Failed: {response.status_code}"
 
 # Function to search for recipes
-def get_recipe_recommendations(calories_per_meal, restrictions, preferences, number_of_recipes=5):
+def get_recipe_recommendations(calories_per_meal, restrictions, preferences, number_of_recipes=25):
     url = f"https://api.spoonacular.com/recipes/complexSearch"
     params = {
         'apiKey': SPOONACULAR_API_KEY,
@@ -78,3 +119,5 @@ def get_recipe_information(recipe_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
