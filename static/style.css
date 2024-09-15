@@ -1,53 +1,123 @@
 /* Basic reset to remove padding, margin, and set default font */
-body, h1, a {
+* {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;  /* Simplified font family */
-    text-align: center;
+    box-sizing: border-box;
+}
+
+body, h1, a {
+    font-family: 'Arial', sans-serif; /* Simplified font family */
 }
 
 body {
-    background-color: #133bf6; /* Set the background color around the circle */
-    height: 100vh;  /* Use the full height of the viewport */
+    background-color: #f0f4f8; /* Light background */
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    flex-direction: column; /* Arrange navbar and main content vertically */
+    justify-content: flex-start; /* Align at the top */
+    align-items: center; /* Center horizontally */
+    padding: 20px;
+    min-height: 100vh; /* Full height */
 }
 
-.circle-container {
-    width: 100%; /* Full width to center the content exactly */
+/* Navbar */
+.navbar {
+    width: 100%; /* Full width of the page */
+    background-color: #133bf6; /* Background color for the navbar */
+    padding: 10px 0; /* Padding inside the navbar */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Center the navbar links */
 }
 
-.circle {
-    background-color: white; /* White background for the circle */
-    border-radius: 50%; /* Perfect circle */
-    width: 300px; /* Circle size */
-    height: 300px; /* Circle size */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center the content vertically */
-    align-items: center; /* Center the content horizontally */
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px; /* Padding for each navbar link */
+    margin: 0 10px; /* Spacing between links */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
+.navbar a:hover {
+    background-color: #0f2b91;
+}
+
+/* Container for the main content */
+.container {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Limit width of the form */
+    width: 100%; /* Full width on smaller screens */
+    margin-top: 20px; /* Space between the navbar and the form */
+    text-align: left;
+}
+
+/* Center the form elements */
 h1 {
-    color: #133bf6; /* Title color matches the outer background */
-    margin-bottom: 20px; /* Space between the title and the button */
+    color: #133bf6; /* Title color */
+    text-align: center;
+    margin-bottom: 15px;
 }
 
-.get-started-button {
-    background-color: #133bf6; /* Background color for the button */
-    color: white; /* Text color for the button */
-    text-decoration: none; /* Remove underline from the link */
-    padding: 10px 20px; /* Padding around the text */
-    border-radius: 5px; /* Rounded corners for the button */
-    font-size: 16px; /* Set font size */
-    font-weight: bold; /* Make the font bold */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
 }
 
-.get-started-button:hover {
-    background-color: #0f2b91; /* Darker blue on hover for the button */
+input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.checkbox-group label {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+button {
+    background-color: #133bf6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #0f2b91;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
 }

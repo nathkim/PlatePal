@@ -114,6 +114,10 @@ def liked_recipes():
     
     return render_template('liked.html', liked_recipes=liked_recipes_data)
 
+@app.route('/schedule')
+def schedule():
+    return render_template('schedule.html')
+
 # Route to test if the Spoonacular API works
 @app.route('/test-api')
 def test_api():

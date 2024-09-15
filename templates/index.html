@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlatePal</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script>
         // JavaScript function to toggle the visibility of the other-restriction input
         function toggleOtherInput() {
@@ -20,62 +20,42 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="/index.html">Home</a>
-        <a href="/schedule.html">Schedule</a>
-        <a href="/liked.html">Liked Recipes</a>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('schedule') }}">Schedule</a>
+        <a href="{{ url_for('liked_recipes') }}">Liked Recipes</a>
     </div>
+
     <div class="container">
         <h1>PlatePal - Recipe Finder</h1>
-        <form action="/recommend" method="POST">
+        <form action="{{ url_for('recommend') }}" method="POST">
             <label for="calories">Daily Calorie Intake:</label>
-            <input type="number" id="calories" name="calories" required><br>
+            <input type="number" id="calories" name="calories" required>
 
             <label for="allergies">Food Allergies:</label>
             <div class="checkbox-group">
-                <input type="checkbox" id="peanuts" name="allergies" value="Peanuts">
-                <label for="peanuts">Peanuts</label><br>
-
-                <input type="checkbox" id="soy" name="allergies" value="Soy">
-                <label for="soy">Soy</label><br>
-
-                <input type="checkbox" id="shellfish" name="allergies" value="Shellfish">
-                <label for="shellfish">Shellfish</label><br>
-
-                <input type="checkbox" id="milk" name="allergies" value="Milk">
-                <label for="milk">Milk</label><br>
-
-                <input type="checkbox" id="eggs" name="allergies" value="Eggs">
-                <label for="eggs">Eggs</label><br>
-
-                <input type="checkbox" id="other" name="allergies" value="Other" onclick="toggleOtherInput()">
-                <label for="other">Other</label><br>
-
-                <input type="text" id="other-restriction" name="other-restriction" style="display:none;" placeholder="Please specify"><br>
+                <label><input type="checkbox" id="peanuts" name="allergies" value="Peanuts">Peanuts</label>
+                <label><input type="checkbox" id="soy" name="allergies" value="Soy">Soy</label>
+                <label><input type="checkbox" id="shellfish" name="allergies" value="Shellfish">Shellfish</label>
+                <label><input type="checkbox" id="milk" name="allergies" value="Milk">Milk</label>
+                <label><input type="checkbox" id="eggs" name="allergies" value="Eggs">Eggs</label>
+                <label><input type="checkbox" id="other" name="allergies" value="Other" onclick="toggleOtherInput()">Other</label>
+                <input type="text" id="other-restriction" name="other-restriction" style="display:none;" placeholder="Please specify">
             </div>
 
             <label for="preferences">Dietary Preferences:</label>
             <div class="checkbox-group">
-                <input type="checkbox" id="vegan" name="preferences" value="Vegan">
-                <label for="vegan">Vegan</label><br>
-
-                <input type="checkbox" id="vegetarian" name="preferences" value="Vegetarian">
-                <label for="vegetarian">Vegetarian</label><br>
-
-                <input type="checkbox" id="paleo" name="preferences" value="Paleo">
-                <label for="paleo">Paleo</label><br>
-
-                <input type="checkbox" id="keto" name="preferences" value="Keto">
-                <label for="keto">Keto</label><br>
-
-                <input type="checkbox" id="gluten-free" name="preferences" value="Gluten-Free">
-                <label for="gluten-free">Gluten-Free</label><br>
+                <label><input type="checkbox" id="vegan" name="preferences" value="Vegan">Vegan</label>
+                <label><input type="checkbox" id="vegetarian" name="preferences" value="Vegetarian">Vegetarian</label>
+                <label><input type="checkbox" id="paleo" name="preferences" value="Paleo">Paleo</label>
+                <label><input type="checkbox" id="keto" name="preferences" value="Keto">Keto</label>
+                <label><input type="checkbox" id="gluten-free" name="preferences" value="Gluten-Free">Gluten-Free</label>
             </div>
 
             <label for="ingredients">Ingredients:</label>
-            <input type="text" id="ingredients" name="ingredients" placeholder="e.g. chicken, rice, etc."><br>
-                       
+            <input type="text" id="ingredients" name="ingredients" placeholder="e.g. chicken, rice, etc.">
+
             <label for="meals">Number of Meals Per Day:</label>
-            <input type="number" id="meals" name="meals" required><br>
+            <input type="number" id="meals" name="meals" required>
 
             <button type="submit">Get Recipes</button>
         </form>
