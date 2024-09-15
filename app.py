@@ -1,67 +1,76 @@
-from flask import Flask, render_template, request, session, redirect, url_for
-import requests
+from flask import Flask, render_template, request
+import requests, os, openai
 from config import SPOONACULAR_API_KEY
 
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Required for session management
 
 # Home route to display input form
 @app.route('/')
 def home():
     return render_template('index.html')
 
+# Function to ask ChatGPT to categorize each recipe
+def categorize_recipe(recipe):
+    prompt = f"Is '{recipe}' considered breakfast, lunch, or dinner one word answer"
+    
+    # Send the prompt to OpenAI GPT-3.5
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a culinary expert."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=10
+    )
+    
+    # Extract the response content (e.g., "breakfast", "lunch", or "dinner")
+    answer = response.choices[0].message.content
+    
+    return answer
+
 # Route to process user input and return recipe search results
 @app.route('/recommend', methods=['POST'])
 def recommend():
-    try:
-        calorie_intake = int(request.form.get('calories', 0))
-        dietary_restrictions = request.form.getlist('allergies')  # Updated from 'restrictions'
-        dietary_preferences = request.form.getlist('preferences')  # Updated to use getlist for multiple values
-        meals_per_day = int(request.form.get('meals', 1))  # Default to 1 if not provided
+    calorie_intake = int(request.form['calories'])
+    dietary_restrictions = request.form.getlist('restrictions')
+    dietary_preferences = request.form['preferences']
+    meals_per_day = int(request.form['meals'])
 
-        if meals_per_day <= 0:
-            meals_per_day = 1  # Prevent division by zero
+    # Calculate calories per meal
+    calories_per_meal = calorie_intake // meals_per_day
 
-        # Calculate calories per meal
-        calories_per_meal = calorie_intake // meals_per_day
+    # Fetch recipe recommendations
+    recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
 
-        # Fetch recipe recommendations
-        recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
+    breakfast_list = []
+    lunch_list = []
+    dinner_list = []
 
-        return render_template('results.html', recipes=recipes)
-    except ValueError:
-        # Handle value errors in case of invalid integer conversions
-        return "Invalid input. Please check your values and try again."
-
-# Route to handle saving liked recipes
-@app.route('/save-likes', methods=['POST'])
-def save_likes():
-    liked_recipe_ids = request.form.getlist('liked_recipes')
+    # Loop through each recipe and categorize it
+    for r in recipes:
+        category = categorize_recipe(r)
     
-    if 'liked_recipes' not in session:
-        session['liked_recipes'] = []
+        # Sort the recipe into the appropriate list based on the OpenAI response
+        if "breakfast" in category.lower():
+            breakfast_list.append(r)
+        elif "lunch" in category.lower():
+            lunch_list.append(r)
+        elif "dinner" in category.lower():
+            dinner_list.append(r)
 
-    # Update session liked recipes list based on the checkboxes
-    current_likes = set(session['liked_recipes'])
-    new_likes = set(liked_recipe_ids)
-    
-    # Add new likes and remove unliked recipes
-    session['liked_recipes'] = list(current_likes.union(new_likes))
-    
-    return redirect(url_for('home'))
+    # Pass the categorized lists to the HTML template
+    return render_template('results.html', 
+                           breakfast_list=breakfast_list, 
+                           lunch_list=lunch_list, 
+                           dinner_list=dinner_list)
 
 # Route to display detailed recipe information
 @app.route('/recipe/<int:recipe_id>')
 def recipe_info(recipe_id):
     recipe_details = get_recipe_information(recipe_id)
     return render_template('recipe_info.html', recipe=recipe_details)
-
-# Route to display liked recipes
-@app.route('/liked')
-def liked_recipes():
-    liked_ids = session.get('liked_recipes', [])
-    recipes = [get_recipe_information(recipe_id) for recipe_id in liked_ids]
-    return render_template('liked.html', recipes=recipes)
 
 # Route to test if the Spoonacular API works
 @app.route('/test-api')
@@ -75,12 +84,12 @@ def test_api():
         return f"API Test Failed: {response.status_code}"
 
 # Function to search for recipes
-def get_recipe_recommendations(calories_per_meal, restrictions, preferences, number_of_recipes=5):
+def get_recipe_recommendations(calories_per_meal, restrictions, preferences, number_of_recipes=25):
     url = f"https://api.spoonacular.com/recipes/complexSearch"
     params = {
         'apiKey': SPOONACULAR_API_KEY,
         'maxCalories': calories_per_meal,
-        'diet': ','.join(preferences),  # Join preferences into a comma-separated string
+        'diet': preferences,
         'intolerances': ','.join(restrictions),
         'number': number_of_recipes
     }
@@ -110,3 +119,5 @@ def get_recipe_information(recipe_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
