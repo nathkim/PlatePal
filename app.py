@@ -18,7 +18,7 @@ liked_recipes_collection = db['liked_recipes']  # Collection for liked recipes
 
 @app.before_request
 def init_session():
-    if 'liked_recipes' not in session:
+    if 'session_id' not in session:
         session['session_id'] = str(uuid.uuid4())  # Create a unique session ID
 
         # Clear all liked recipes associated with this session ID in MongoDB
