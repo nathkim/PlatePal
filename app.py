@@ -35,7 +35,7 @@ def categorize_recipe(recipe):
 def recommend():
     calorie_intake = int(request.form['calories'])
     dietary_restrictions = request.form.getlist('restrictions')
-    dietary_preferences = request.form['preferences']
+    dietary_preferences = request.form.getlist('preferences')
     meals_per_day = int(request.form['meals'])
 
     # Calculate calories per meal
@@ -89,7 +89,7 @@ def get_recipe_recommendations(calories_per_meal, restrictions, preferences, num
     params = {
         'apiKey': SPOONACULAR_API_KEY,
         'maxCalories': calories_per_meal,
-        'diet': preferences,
+        'diet': ','.join(preferences),
         'intolerances': ','.join(restrictions),
         'number': number_of_recipes
     }
