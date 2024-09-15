@@ -36,13 +36,14 @@ def recommend():
     calorie_intake = int(request.form['calories'])
     dietary_restrictions = request.form.getlist('restrictions')
     dietary_preferences = request.form.getlist('preferences')
+    ingredients = request.form.get('ingredients')
     meals_per_day = int(request.form['meals'])
 
     # Calculate calories per meal
     calories_per_meal = calorie_intake // meals_per_day
 
     # Fetch recipe recommendations
-    recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences)
+    recipes = get_recipe_recommendations(calories_per_meal, dietary_restrictions, dietary_preferences, ingredients)
 
     breakfast_list = []
     lunch_list = []
@@ -84,23 +85,44 @@ def test_api():
         return f"API Test Failed: {response.status_code}"
 
 # Function to search for recipes
-def get_recipe_recommendations(calories_per_meal, restrictions, preferences, number_of_recipes=25):
+def get_recipe_recommendations(calories_per_meal, restrictions, preferences, ingredients, number_of_recipes=25):
     url = f"https://api.spoonacular.com/recipes/complexSearch"
-    params = {
-        'apiKey': SPOONACULAR_API_KEY,
-        'maxCalories': calories_per_meal,
-        'diet': ','.join(preferences),
-        'intolerances': ','.join(restrictions),
-        'number': number_of_recipes
-    }
-    
+    all_results = []
+    if ingredients:
+        ingredient_list = [ingredient.strip() for ingredient in ingredients.split(',')]
+
+        for i in ingredient_list:
+            params = {
+                'apiKey': SPOONACULAR_API_KEY,
+                'maxCalories': calories_per_meal,
+                'diet': ','.join(preferences),
+                'intolerances': ','.join(restrictions),
+                'includeIngredients': i,
+                'number': 5
+            }
+            response = requests.get(url, params=params)
+            if response.status_code == 200:
+                all_results.extend(response.json().get('results', []))  # Combine results
+            else:
+                print(f"Error: {response.status_code}")
+
+    # Calculate the remaining number of recipes to fetch, ensuring it's non-negative
+    remaining_recipes = number_of_recipes - len(ingredient_list) * 5
+    if remaining_recipes > 0:
+        params = {
+            'apiKey': SPOONACULAR_API_KEY,
+            'maxCalories': calories_per_meal,
+            'diet': ','.join(preferences),
+            'intolerances': ','.join(restrictions),
+            'number': remaining_recipes
+        }
     response = requests.get(url, params=params)
-    
     if response.status_code == 200:
-        return response.json().get('results', [])
+        all_results.extend(response.json().get('results', []))  # Combine results
     else:
         print(f"Error: {response.status_code}")
-        return []
+    
+    return all_results
 
 # Function to get detailed recipe information
 def get_recipe_information(recipe_id):
