@@ -4,49 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlatePal - Results</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    {% include 'navbar.html' %}
     <h1>Your Recipe Recommendations</h1>
 
-    <h2>Breakfast Recipes:</h2>
-    <ul>
-        {% for recipe in breakfast_list %}
-        <li>
-            <a href="/recipe/{{ recipe.id }}">
-                {{ recipe.title }}
-            </a>
-        </li>
-        {% else %}
-        <li>No breakfast recipes found.</li>
-        {% endfor %}
-    </ul>
+    <form action="/update_liked_recipes" method="POST">
+        <h2>Breakfast Recipes:</h2>
+        <ul>
+            {% for recipe in breakfast_list %}
+            <li>
+                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+                <input type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
+                    {% if recipe.id|string in liked_recipes %}checked{% endif %}> Like
+            </li>
+            {% else %}
+            <li>No breakfast recipes found.</li>
+            {% endfor %}
+        </ul>
 
-    <h2>Lunch Recipes:</h2>
-    <ul>
-        {% for recipe in lunch_list %}
-        <li>
-            <a href="/recipe/{{ recipe.id }}">
-                {{ recipe.title }}
-            </a>
-        </li>
-        {% else %}
-        <li>No lunch recipes found.</li>
-        {% endfor %}
-    </ul>
+        <h2>Lunch Recipes:</h2>
+        <ul>
+            {% for recipe in lunch_list %}
+            <li>
+                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+                <input type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
+                    {% if recipe.id|string in liked_recipes %}checked{% endif %}> Like
+            </li>
+            {% else %}
+            <li>No lunch recipes found.</li>
+            {% endfor %}
+        </ul>
 
-    <h2>Dinner Recipes:</h2>
-    <ul>
-        {% for recipe in dinner_list %}
-        <li>
-            <a href="/recipe/{{ recipe.id }}">
-                {{ recipe.title }}
-            </a>
-        </li>
-        {% else %}
-        <li>No dinner recipes found.</li>
-        {% endfor %}
-    </ul>
+        <h2>Dinner Recipes:</h2>
+        <ul>
+            {% for recipe in dinner_list %}
+            <li>
+                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+                <input type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
+                    {% if recipe.id|string in liked_recipes %}checked{% endif %}> Like
+            </li>
+            {% else %}
+            <li>No dinner recipes found.</li>
+            {% endfor %}
+        </ul>
 
-    <a href="/">Search again</a>
+        <button type="submit">Save Liked Recipes</button>
+    </form>
+
+    <a href="/" class="button">Search Again</a>
 </body>
 </html>

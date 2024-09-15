@@ -39,6 +39,10 @@ def recommend():
     ingredients = request.form.get('ingredients')
     meals_per_day = int(request.form['meals'])
 
+    other_restriction = request.form.get('other-restriction', '').strip()
+    if 'Other' in dietary_restrictions and other_restriction:
+        dietary_restrictions.append(other_restriction)
+
     # Calculate calories per meal
     calories_per_meal = calorie_intake // meals_per_day
 

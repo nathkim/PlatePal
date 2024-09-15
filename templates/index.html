@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlatePal</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        // JavaScript function to toggle the visibility of the other-restriction input
+        function toggleOtherInput() {
+            var otherCheckbox = document.getElementById('other');
+            var otherInput = document.getElementById('other-restriction');
+            if (otherCheckbox.checked) {
+                otherInput.style.display = 'block';
+            } else {
+                otherInput.style.display = 'none';
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="navbar">
@@ -18,7 +30,7 @@
             <label for="calories">Daily Calorie Intake:</label>
             <input type="number" id="calories" name="calories" required><br>
 
-            <label for="allergies">Common Food Allergies:</label>
+            <label for="allergies">Food Allergies:</label>
             <div class="checkbox-group">
                 <input type="checkbox" id="peanuts" name="allergies" value="Peanuts">
                 <label for="peanuts">Peanuts</label><br>
@@ -61,7 +73,7 @@
 
             <label for="ingredients">Ingredients:</label>
             <input type="text" id="ingredients" name="ingredients" placeholder="e.g. chicken, rice, etc."><br>
-
+                       
             <label for="meals">Number of Meals Per Day:</label>
             <input type="number" id="meals" name="meals" required><br>
 
