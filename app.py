@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect, session
 import requests, os, openai
 from config import SPOONACULAR_API_KEY
 
@@ -92,6 +92,7 @@ def test_api():
 def get_recipe_recommendations(calories_per_meal, restrictions, preferences, ingredients, number_of_recipes=25):
     url = f"https://api.spoonacular.com/recipes/complexSearch"
     all_results = []
+    ingredient_list = []
     if ingredients:
         ingredient_list = [ingredient.strip() for ingredient in ingredients.split(',')]
 
@@ -145,5 +146,3 @@ def get_recipe_information(recipe_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-

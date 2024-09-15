@@ -1,130 +1,53 @@
-/* Navbar styling */
-.navbar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 0 0 0 10px; /* Optional: add rounded corners */
-    z-index: 1000; /* Ensure navbar is above other content */
-}
-
-.navbar a {
-    color: #fff;
-    text-decoration: none;
-    padding: 10px 15px;
-    display: inline-block;
-}
-
-.navbar a:hover {
-    background-color: #555;
-    border-radius: 5px;
-}
-
-/* Body styling with margin to account for fixed navbar */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+/* Basic reset to remove padding, margin, and set default font */
+body, h1, a {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 60px; /* Add padding to top to avoid content being hidden behind navbar */
-}
-
-/* Container styling */
-.container {
-    width: 100%;
-    max-width: 800px;
-    padding: 20px;
-}
-
-h1 {
-    color: #333;
-    margin-bottom: 20px;
-}
-
-form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-}
-
-label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
-}
-
-input[type="number"], input[type="text"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.checkbox-group {
-    margin: 10px 0;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    width: 100%;
-    max-width: 600px;
-}
-
-li {
-    background: #fff;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin: 5px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-.button {
-    display: inline-block;
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
+    font-family: 'Arial', sans-serif;  /* Simplified font family */
     text-align: center;
 }
 
-.button:hover {
-    background-color: #0056b3;
+body {
+    background-color: #133bf6; /* Set the background color around the circle */
+    height: 100vh;  /* Use the full height of the viewport */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.circle-container {
+    width: 100%; /* Full width to center the content exactly */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circle {
+    background-color: white; /* White background for the circle */
+    border-radius: 50%; /* Perfect circle */
+    width: 300px; /* Circle size */
+    height: 300px; /* Circle size */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center the content vertically */
+    align-items: center; /* Center the content horizontally */
+}
+
+h1 {
+    color: #133bf6; /* Title color matches the outer background */
+    margin-bottom: 20px; /* Space between the title and the button */
+}
+
+.get-started-button {
+    background-color: #133bf6; /* Background color for the button */
+    color: white; /* Text color for the button */
+    text-decoration: none; /* Remove underline from the link */
+    padding: 10px 20px; /* Padding around the text */
+    border-radius: 5px; /* Rounded corners for the button */
+    font-size: 16px; /* Set font size */
+    font-weight: bold; /* Make the font bold */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.get-started-button:hover {
+    background-color: #0f2b91; /* Darker blue on hover for the button */
 }
