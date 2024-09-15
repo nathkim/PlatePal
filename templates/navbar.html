@@ -1,0 +1,43 @@
+<!-- templates/navbar.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            position: fixed; /* Fixes the navbar to the top */
+            top: 0;
+            right: 0;
+            width: 100%; /* Full width */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds a shadow */
+            z-index: 1000; /* Ensures it stays on top of other content */
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+        body {
+            margin-top: 50px; /* Adjust margin to avoid content being hidden behind the fixed navbar */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/schedule">Schedule</a>
+        <a href="/liked">Liked Recipes</a>
+    </div>
+</body>
+</html>

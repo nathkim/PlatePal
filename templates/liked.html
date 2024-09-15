@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlatePal - Liked Recipes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/index.html">Home</a>
+        <a href="/schedule.html">Schedule</a>
+        <a href="/liked.html">Liked Recipes</a>
+    </div>
+    <div class="container">
+        <h1>Your Liked Recipes</h1>
+        <ul>
+            {% for recipe in liked_recipes %}
+            <li>
+                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="/" class="button">Search Again</a>
+    </div>
+</body>
+</html>
