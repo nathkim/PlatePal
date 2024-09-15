@@ -102,18 +102,18 @@ def recipe_info(recipe_id):
     recipe_details = get_recipe_information(recipe_id)
     return render_template('recipe_info.html', recipe=recipe_details)
 
-# Route to save liked recipes to MongoDB Atlas
+# Route to save or remove liked recipes to/from MongoDB Atlas
 @app.route('/update_liked_recipes', methods=['POST'])
 def update_liked_recipes():
-    liked_recipes = request.form.getlist('liked_recipes')
+    liked_recipes = request.form.getlist('liked_recipes')  # Get the list of checked recipes
 
-    session['liked_recipes'] = list(set(session['liked_recipes']) | set(liked_recipes))  # Append new liked recipes to the session
+    # Remove all existing liked recipes for the session first
+    liked_recipes_collection.delete_many({'session_id': session['session_id']})
 
-    # Insert new liked recipes into MongoDB Atlas
+    # Re-add the ones that are still liked (i.e., checked in the form)
     for recipe_id in liked_recipes:
-        if not liked_recipes_collection.find_one({'recipe_id': recipe_id, 'session_id': session['session_id']}):
-            liked_recipes_collection.insert_one({'recipe_id': recipe_id, 'session_id': session['session_id']})
-    
+        liked_recipes_collection.insert_one({'recipe_id': recipe_id, 'session_id': session['session_id']})
+
     return redirect(url_for('liked_recipes'))
 
 # Route to display liked recipes (liked.html)

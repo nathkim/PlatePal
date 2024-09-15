@@ -4,22 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlatePal - Liked Recipes</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Navbar styling */
+        .navbar {
+            background-color: #007bff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3;
+            border-radius: 4px;
+        }
+
+        /* Header Styling */
+        h1 {
+            color: black;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Container styling */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* List styling */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Rectangular checkbox */
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+        }
+
+        /* Rectangular buttons */
+        button {
+            display: inline-block; /* Make button inline */
+            border-radius: 4px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a.button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        a.button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    {% include 'navbar.html' %}
-    <h1>Your Liked Recipes</h1>
+    <div class="navbar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('schedule') }}">Schedule</a>
+        <a href="{{ url_for('liked_recipes') }}">Liked Recipes</a>
+    </div>
 
-    <ul>
-        {% for recipe in liked_recipes %}
-        <li>
-            <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
-        </li>
-        {% else %}
-        <li>You haven't liked any recipes yet.</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Your Liked Recipes</h1>
 
-    <a href="/" class="button">Search for More Recipes</a>
+        <form action="/update_liked_recipes" method="POST">
+            <ul>
+                {% for recipe in liked_recipes %}
+                <li>
+                    <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+                    <input type="checkbox" name="liked_recipes" value="{{ recipe.id }}" checked>
+                </li>
+                {% else %}
+                <li>You haven't liked any recipes yet.</li>
+                {% endfor %}
+            </ul>
+
+            <button type="submit">Update</button>
+        </form>
+
+        <a href="/" class="button">Search for More Recipes</a>
+    </div>
 </body>
 </html>

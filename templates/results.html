@@ -5,54 +5,247 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlatePal - Results</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Navbar styling */
+        .navbar {
+            background-color: #007bff; /* Blue color */
+            padding: 10px 0;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 15px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            border-radius: 4px;
+        }
+
+        /* Page container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 22px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        /* Flex container for the 3 columns */
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        /* Column styling */
+        .column {
+            flex: 1;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .column:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Styling for lists of recipes */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        li a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Checkbox and label container */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        label {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2); /* Slightly larger checkboxes */
+        }
+
+        /* Submit button */
+        button {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Return search button */
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Align button to center */
+        .button-container {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    {% include 'navbar.html' %}
-    <h1>Your Recipe Recommendations</h1>
+    <!-- Blue navbar -->
+    <div class="navbar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('schedule') }}">Schedule</a>
+        <a href="{{ url_for('liked_recipes') }}">Liked Recipes</a>
+    </div>
 
-    <form action="/update_liked_recipes" method="POST">
-        <h2>Breakfast Recipes:</h2>
-        <ul>
-            {% for recipe in breakfast_list %}
-            <li>
-                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
-                <input type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
-                    {% if recipe.id|string in liked_recipes %}checked{% endif %}> Like
-            </li>
-            {% else %}
-            <li>No breakfast recipes found.</li>
-            {% endfor %}
-        </ul>
+    <div class="container">
+        <h1>Your Recipe Recommendations</h1>
 
-        <h2>Lunch Recipes:</h2>
-        <ul>
-            {% for recipe in lunch_list %}
-            <li>
-                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
-                <input type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
-                    {% if recipe.id|string in liked_recipes %}checked{% endif %}> Like
-            </li>
-            {% else %}
-            <li>No lunch recipes found.</li>
-            {% endfor %}
-        </ul>
+        <!-- Flex container for the 3 columns -->
+        <form action="/update_liked_recipes" method="POST">
+            <div class="flex-container">
+                <!-- Breakfast column -->
+                <div class="column">
+                    <h2>Breakfast Recipes:</h2>
+                    <ul>
+                        {% for recipe in breakfast_list %}
+                        <li>
+                            <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+                            <div class="checkbox-container">
+                                <label for="like_{{ recipe.id }}">Like</label>
+                                <input id="like_{{ recipe.id }}" type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
+                                    {% if recipe.id|string in liked_recipes %}checked{% endif %}>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li>No breakfast recipes found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
 
-        <h2>Dinner Recipes:</h2>
-        <ul>
-            {% for recipe in dinner_list %}
-            <li>
-                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
-                <input type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
-                    {% if recipe.id|string in liked_recipes %}checked{% endif %}> Like
-            </li>
-            {% else %}
-            <li>No dinner recipes found.</li>
-            {% endfor %}
-        </ul>
+                <!-- Lunch column -->
+                <div class="column">
+                    <h2>Lunch Recipes:</h2>
+                    <ul>
+                        {% for recipe in lunch_list %}
+                        <li>
+                            <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+                            <div class="checkbox-container">
+                                <label for="like_{{ recipe.id }}">Like</label>
+                                <input id="like_{{ recipe.id }}" type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
+                                    {% if recipe.id|string in liked_recipes %}checked{% endif %}>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li>No lunch recipes found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
 
-        <button type="submit">Save Liked Recipes</button>
-    </form>
+                <!-- Dinner column -->
+                <div class="column">
+                    <h2>Dinner Recipes:</h2>
+                    <ul>
+                        {% for recipe in dinner_list %}
+                        <li>
+                            <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+                            <div class="checkbox-container">
+                                <label for="like_{{ recipe.id }}">Like</label>
+                                <input id="like_{{ recipe.id }}" type="checkbox" name="liked_recipes" value="{{ recipe.id }}"
+                                    {% if recipe.id|string in liked_recipes %}checked{% endif %}>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li>No dinner recipes found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
 
-    <a href="/" class="button">Search Again</a>
+            <div class="button-container">
+                <button type="submit">Save Liked Recipes</button>
+            </div>
+        </form>
+
+        <div class="button-container">
+            <a href="/" class="button">Search Again</a>
+        </div>
+    </div>
 </body>
 </html>
