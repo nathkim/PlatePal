@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for, redirect, session
-import requests, os, openai
+import requests, os, openai, uuid
 from pymongo import MongoClient
 from config import SPOONACULAR_API_KEY
 
@@ -7,12 +7,29 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 app = Flask(__name__)
 
+app.secret_key = os.getenv('SESSION_KEY')
+
 MONGO_URI = os.getenv('MONGO_URI')
 
 # MongoDB setup
 client = MongoClient(MONGO_URI)  # Connect to MongoDB
 db = client['platepal_db']  # Database for storing liked recipes
 liked_recipes_collection = db['liked_recipes']  # Collection for liked recipes
+
+@app.before_request
+def init_session():
+    if 'liked_recipes' not in session:
+        session['session_id'] = str(uuid.uuid4())  # Create a unique session ID
+
+        # Clear all liked recipes associated with this session ID in MongoDB
+        liked_recipes_collection.delete_many({'session_id': session['session_id']})
+
+        # Initialize the liked_recipes list in the session
+        session['liked_recipes'] = []
+
+# @app.before_request
+# def force_new_session():
+#     session.clear()
 
 # Home route to display input form
 @app.route('/')
@@ -90,12 +107,12 @@ def recipe_info(recipe_id):
 def update_liked_recipes():
     liked_recipes = request.form.getlist('liked_recipes')
 
-    # Clear current liked recipes for the user and update with the new ones
-    liked_recipes_collection.delete_many({})  # Clear existing liked recipes
+    session['liked_recipes'] = list(set(session['liked_recipes']) | set(liked_recipes))  # Append new liked recipes to the session
 
     # Insert new liked recipes into MongoDB Atlas
     for recipe_id in liked_recipes:
-        liked_recipes_collection.insert_one({'recipe_id': recipe_id})
+        if not liked_recipes_collection.find_one({'recipe_id': recipe_id, 'session_id': session['session_id']}):
+            liked_recipes_collection.insert_one({'recipe_id': recipe_id, 'session_id': session['session_id']})
     
     return redirect(url_for('liked_recipes'))
 
@@ -103,8 +120,7 @@ def update_liked_recipes():
 @app.route('/liked')
 def liked_recipes():
     # Get all liked recipe IDs from MongoDB
-    liked_recipe_ids = [recipe['recipe_id'] for recipe in liked_recipes_collection.find({})]
-    
+    liked_recipe_ids = [recipe['recipe_id'] for recipe in liked_recipes_collection.find({'session_id': session['session_id']})]    
     # Fetch additional details about liked recipes if needed
     liked_recipes_data = []
     for recipe_id in liked_recipe_ids:
