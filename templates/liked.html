@@ -7,21 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="/index.html">Home</a>
-        <a href="/schedule.html">Schedule</a>
-        <a href="/liked.html">Liked Recipes</a>
-    </div>
-    <div class="container">
-        <h1>Your Liked Recipes</h1>
-        <ul>
-            {% for recipe in liked_recipes %}
-            <li>
-                <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        <a href="/" class="button">Search Again</a>
-    </div>
+    {% include 'navbar.html' %}
+    <h1>Your Liked Recipes</h1>
+
+    <ul>
+        {% for recipe in liked_recipes %}
+        <li>
+            <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+        </li>
+        {% else %}
+        <li>You haven't liked any recipes yet.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/" class="button">Search for More Recipes</a>
 </body>
 </html>

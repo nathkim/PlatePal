@@ -1,10 +1,18 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 import requests, os, openai
+from pymongo import MongoClient
 from config import SPOONACULAR_API_KEY
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 app = Flask(__name__)
+
+MONGO_URI = os.getenv('MONGO_URI')
+
+# MongoDB setup
+client = MongoClient(MONGO_URI)  # Connect to MongoDB
+db = client['platepal_db']  # Database for storing liked recipes
+liked_recipes_collection = db['liked_recipes']  # Collection for liked recipes
 
 # Home route to display input form
 @app.route('/')
@@ -76,6 +84,35 @@ def recommend():
 def recipe_info(recipe_id):
     recipe_details = get_recipe_information(recipe_id)
     return render_template('recipe_info.html', recipe=recipe_details)
+
+# Route to save liked recipes to MongoDB Atlas
+@app.route('/update_liked_recipes', methods=['POST'])
+def update_liked_recipes():
+    liked_recipes = request.form.getlist('liked_recipes')
+
+    # Clear current liked recipes for the user and update with the new ones
+    liked_recipes_collection.delete_many({})  # Clear existing liked recipes
+
+    # Insert new liked recipes into MongoDB Atlas
+    for recipe_id in liked_recipes:
+        liked_recipes_collection.insert_one({'recipe_id': recipe_id})
+    
+    return redirect(url_for('liked_recipes'))
+
+# Route to display liked recipes (liked.html)
+@app.route('/liked')
+def liked_recipes():
+    # Get all liked recipe IDs from MongoDB
+    liked_recipe_ids = [recipe['recipe_id'] for recipe in liked_recipes_collection.find({})]
+    
+    # Fetch additional details about liked recipes if needed
+    liked_recipes_data = []
+    for recipe_id in liked_recipe_ids:
+        recipe_details = get_recipe_information(recipe_id)
+        if recipe_details:
+            liked_recipes_data.append(recipe_details)
+    
+    return render_template('liked.html', liked_recipes=liked_recipes_data)
 
 # Route to test if the Spoonacular API works
 @app.route('/test-api')
